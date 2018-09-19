@@ -20,11 +20,12 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment-service',
+        'Magento_Checkout/js/checkout-data',
         'Iways_PayPalPlus/js/action/patch-ppp-payment',
         'Magento_Checkout/js/model/payment/additional-validators',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (ko, $, _, Component, quote, paymentService, patchPPPPayment, additionalValidators) {
+    function (ko, $, _, Component, quote, paymentService, checkoutData, patchPPPPayment, additionalValidators) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
@@ -83,6 +84,18 @@ define(
                 }, this);
                 self.selectPaymentMethod();
                 self.isPPPMethod = ko.computed(function () {
+                    // after reload (e.g. post code reload) payment method of quote is empty. restore
+                    if(!quote.paymentMethod() && checkoutData.getSelectedPaymentMethod() === 'iways_paypalplus_payment') {
+                        var paymentMethod = {'po_number': null, 'additional_data': null};
+                        if(self.ppp.getPaymentMethod() && self.paymentCodeMappings.hasOwnProperty(self.ppp.getPaymentMethod())) {
+                            paymentMethod.method = self.paymentCodeMappings[self.ppp.getPaymentMethod()];
+                        } else {
+                            paymentMethod.method = checkoutData.getSelectedPaymentMethod();
+                        }
+
+                        quote.setPaymentMethod(paymentMethod);
+                    }
+
                     if(quote.paymentMethod() && (
                             quote.paymentMethod().method == 'iways_paypalplus_payment'
                             || typeof self.thirdPartyPaymentMethods[quote.paymentMethod().method] !== "undefined"
