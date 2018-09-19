@@ -132,7 +132,8 @@ define(
                             self.selectPaymentMethod();
                         },
                         enableContinue: function () {
-                            if (self.lastCall != 'onThirdPartyPaymentMethodSelected') {
+                            var currentMethod = self.ppp.getPaymentMethod() || 'pp-';
+                            if (self.lastCall !== 'onThirdPartyPaymentMethodSelected' && currentMethod.substr(0,3) === 'pp-') {
                                 self.selectedMethod = 'iways_paypalplus_payment';
                                 self.selectPaymentMethod();
                             }
