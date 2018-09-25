@@ -85,15 +85,16 @@ define(
                 self.selectPaymentMethod();
                 self.isPPPMethod = ko.computed(function () {
                     // after reload (e.g. post code reload) payment method of quote is empty. restore
-                    if(!quote.paymentMethod() && checkoutData.getSelectedPaymentMethod() === 'iways_paypalplus_payment') {
-                        var paymentMethod = {'po_number': null, 'additional_data': null};
-                        if(self.ppp.getPaymentMethod() && self.paymentCodeMappings.hasOwnProperty(self.ppp.getPaymentMethod())) {
-                            paymentMethod.method = self.paymentCodeMappings[self.ppp.getPaymentMethod()];
-                        } else {
-                            paymentMethod.method = checkoutData.getSelectedPaymentMethod();
-                        }
+                    if (self.selectedMethod && checkoutData.getSelectedPaymentMethod() === 'iways_paypalplus_payment') {
+                        if(!quote.paymentMethod() || quote.paymentMethod() !== self.selectedMethod) {
+                            quote.setPaymentMethod({
+                                'method': self.selectedMethod,
+                                'po_number': null,
+                                'additional_data': null
+                            });
+                         }
 
-                        quote.setPaymentMethod(paymentMethod);
+                         return self.selectedMethod;
                     }
 
                     if(quote.paymentMethod() && (
