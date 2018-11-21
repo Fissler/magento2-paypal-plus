@@ -21,7 +21,7 @@ define(
                 var thirdPartyMethods = [],
                     isPPP = false;
                 // manipulate list, that third party methods are valid after ajax reload (e.g. custom OSC)
-                if (!_.isEmpty(paypalplusConfig.thirdPartyPaymentMethods)) {
+                if (!_.isUndefined(paypalplusConfig) && !_.isEmpty(paypalplusConfig.thirdPartyPaymentMethods)) {
                     // check, if PPP is active in payment list, then allow third party methods
                     if (_.findWhere(methods, {method: pppMethodName})) {
                         _.each(paypalplusConfig.thirdPartyPaymentMethods, function (thirdParty, name) {
