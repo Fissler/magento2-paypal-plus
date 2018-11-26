@@ -20,12 +20,11 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment-service',
-        'Magento_Checkout/js/checkout-data',
         'Iways_PayPalPlus/js/action/patch-ppp-payment',
         'Magento_Checkout/js/model/payment/additional-validators',
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
-    function (ko, $, _, Component, quote, paymentService, checkoutData, patchPPPPayment, additionalValidators) {
+    function (ko, $, _, Component, quote, paymentService, patchPPPPayment, additionalValidators) {
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
@@ -84,19 +83,6 @@ define(
                 }, this);
                 self.selectPaymentMethod();
                 self.isPPPMethod = ko.computed(function () {
-                    // after reload (e.g. post code reload) payment method of quote is empty. restore
-                    if (self.selectedMethod && checkoutData.getSelectedPaymentMethod() === 'iways_paypalplus_payment') {
-                        if(!quote.paymentMethod() || quote.paymentMethod() !== self.selectedMethod) {
-                            quote.setPaymentMethod({
-                                'method': self.selectedMethod,
-                                'po_number': null,
-                                'additional_data': null
-                            });
-                         }
-
-                         return self.selectedMethod;
-                    }
-
                     if(quote.paymentMethod() && (
                             quote.paymentMethod().method == 'iways_paypalplus_payment'
                             || typeof self.thirdPartyPaymentMethods[quote.paymentMethod().method] !== "undefined"
@@ -133,8 +119,7 @@ define(
                             self.selectPaymentMethod();
                         },
                         enableContinue: function () {
-                            var currentMethod = self.ppp.getPaymentMethod() || 'pp-';
-                            if (self.lastCall !== 'onThirdPartyPaymentMethodSelected' && currentMethod.substr(0,3) === 'pp-') {
+                            if (self.lastCall != 'onThirdPartyPaymentMethodSelected') {
                                 self.selectedMethod = 'iways_paypalplus_payment';
                                 self.selectPaymentMethod();
                             }
