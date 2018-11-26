@@ -173,7 +173,7 @@ define(
                     event.preventDefault();
                 }
                 var self = this;
-                if (self.selectedMethod == "iways_paypalplus_payment") {
+                if (self.isPPPMethod()) {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
                         return true;
