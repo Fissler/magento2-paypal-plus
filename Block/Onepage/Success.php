@@ -61,7 +61,8 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     public function isPPP()
     {
-        if ($this->order->getPayment()->getMethodInstance()->getCode() == Payment::CODE) {
+        $orderPayment = $this->order->getPayment();
+        if ($orderPayment && $orderPayment->getMethodInstance()->getCode() === Payment::CODE) {
             return true;
         }
         return false;
