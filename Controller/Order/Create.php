@@ -131,7 +131,9 @@ class Create extends \Magento\Framework\App\Action\Action
                     && version_compare($this->productMetadata->getVersion(), self::MAX_SEND_MAIL_VERSION, '<')
                 ) {
                     try {
-                        $this->orderSender->send($order);
+						if (!$order->getEmailSent()) {
+							$this->orderSender->send($order);
+						}
                     } catch (\Exception $e) {
                         $this->logger->critical($e);
                     }
