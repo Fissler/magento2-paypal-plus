@@ -28,7 +28,6 @@ define(
         var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
-            lastCall: false,
             ppp: false,
             continueCount: 0,
             selectedMethod: "iways_paypalplus_payment",
@@ -110,20 +109,14 @@ define(
                         language: self.language,
                         preselection: "paypal",
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
-                        onLoad: function() {
-                            self.lastCall = 'enableContinue';
-                        },
                         onThirdPartyPaymentMethodSelected: function (data) {
-                            self.lastCall = 'onThirdPartyPaymentMethodSelected';
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
                             self.selectPaymentMethod();
                         },
+                        onThirdPartyPaymentMethodDeselected: function() {
+                            self.selectedMethod = 'iways_paypalplus_payment';
+                        },
                         enableContinue: function () {
-                            if (self.lastCall != 'onThirdPartyPaymentMethodSelected') {
-                                self.selectedMethod = 'iways_paypalplus_payment';
-                                self.selectPaymentMethod();
-                            }
-                            self.lastCall = 'enableContinue';
                             self.isPaymentMethodSelected = true;
                             $("#place-ppp-order").removeAttr("disabled");
                         },
