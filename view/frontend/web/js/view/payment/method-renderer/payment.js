@@ -25,12 +25,13 @@ define(
         '//www.paypalobjects.com/webstatic/ppplus/ppplus.min.js'
     ],
     function (ko, $, _, Component, quote, paymentService, patchPPPPayment, additionalValidators) {
-        var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment;
+        var paypalplusConfig = window.checkoutConfig.payment.iways_paypalplus_payment,
+            pppMethodId = 'iways_paypalplus_payment';
         return Component.extend({
             isPaymentMethodSelected: ko.observable(false),
             ppp: false,
             continueCount: 0,
-            selectedMethod: "iways_paypalplus_payment",
+            selectedMethod: pppMethodId,
             isInitialized: false,
             lastHash: false,
             defaults: {
@@ -83,7 +84,7 @@ define(
                 self.selectPaymentMethod();
                 self.isPPPMethod = ko.computed(function () {
                     if(quote.paymentMethod() && (
-                            quote.paymentMethod().method == 'iways_paypalplus_payment'
+                            quote.paymentMethod().method === pppMethodId
                             || typeof self.thirdPartyPaymentMethods[quote.paymentMethod().method] !== "undefined"
                         )
                     ) {
@@ -108,13 +109,19 @@ define(
                         country: self.getCountry(),
                         language: self.language,
                         preselection: "paypal",
+                        onLoad: function() {
+                            if (quote.paymentMethod() && quote.paymentMethod().method === pppMethodId) {
+                                self.selectPaymentMethod();
+                            }
+                        },
                         thirdPartyPaymentMethods: self.getThirdPartyPaymentMethods(),
                         onThirdPartyPaymentMethodSelected: function (data) {
                             self.selectedMethod = self.paymentCodeMappings[data.thirdPartyPaymentMethod];
                             self.selectPaymentMethod();
                         },
                         onThirdPartyPaymentMethodDeselected: function() {
-                            self.selectedMethod = 'iways_paypalplus_payment';
+                            self.selectedMethod = pppMethodId;
+                            self.selectPaymentMethod();
                         },
                         enableContinue: function () {
                             self.isPaymentMethodSelected = true;
@@ -166,7 +173,7 @@ define(
                     event.preventDefault();
                 }
                 var self = this;
-                if (self.selectedMethod == "iways_paypalplus_payment") {
+                if (self.selectedMethod === pppMethodId) {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
                         return true;
