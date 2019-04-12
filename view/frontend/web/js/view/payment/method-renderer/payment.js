@@ -173,7 +173,7 @@ define(
                     event.preventDefault();
                 }
                 var self = this;
-                if (self.selectedMethod === pppMethodId) {
+                if (self.isPPPMethod()) {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
                         return true;
