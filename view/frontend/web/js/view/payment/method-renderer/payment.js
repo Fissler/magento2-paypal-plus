@@ -173,15 +173,17 @@ define(
                     event.preventDefault();
                 }
                 var self = this;
-                if (self.isPPPMethod()) {
+                // checks quote method (to validate, if paypal plus is selected and check, if paypal in frame selected)
+                if (self.isPPPMethod() && self.selectedMethod === pppMethodId) {
                     if (this.validate() && additionalValidators.validate()) {
                         patchPPPPayment(this.messageContainer, this.getData(), self.ppp);
                         return true;
                     }
-                    return false;
-                } else {
+                } else if(self.isPPPMethod()) {
+                    // case, third party payment inside the paypal frame
                     return this.placeOrder(data, event);
                 }
+                return false;
             },
             getCountry: function() {
                 try {
