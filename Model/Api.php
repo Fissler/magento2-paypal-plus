@@ -217,7 +217,7 @@ class Api
                 'mode' => $this->_mode,
                 'log.LogEnabled' => $this->scopeConfig->getValue('iways_paypalplus/dev/debug', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $website),
                 'log.FileName' => $this->directoryList->getPath(DirectoryList::LOG) . '/PayPal.log',
-                'log.LogLevel' => 'INFO'
+                'log.LogLevel' => 'DEBUG'
             ]
         );
         $this->_apiContext->addRequestHeader('PayPal-Partner-Attribution-Id', 'Magento_Cart_PayPalPlusMagento2');
