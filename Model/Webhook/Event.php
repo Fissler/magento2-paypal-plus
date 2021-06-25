@@ -139,7 +139,7 @@ class Event
         $this->_order->save();
 
         // notify customer
-        $invoice = $payment->getCreatedInvoice();
+        /*$invoice = $payment->getCreatedInvoice();
         if ($invoice && !$this->_order->getEmailSent()) {
             $this->_order->queueNewOrderEmail()
                 ->addStatusHistoryComment(
@@ -148,7 +148,7 @@ class Event
                         $invoice->getIncrementId()
                     )
                 )->setIsCustomerNotified(true)->save();
-        }
+        }*/
     }
 
     /**
